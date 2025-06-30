@@ -22,4 +22,5 @@ workflows:
   my-workflows:
     jobs:
       - pr-comment
+      contexts: ctx-ci
       

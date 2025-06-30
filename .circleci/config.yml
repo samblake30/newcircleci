@@ -42,10 +42,10 @@ jobs:
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Found PR #$PR_NUMBER for branch $BRANCH_NAME"
 
-              PR_STATE = $(echo "$PR_RESPONSE" | jq -r  '.[0].state // empty')
+              PR_STATE=$(echo "$PR_RESPONSE" | jq -r  '.[0].state // empty')
               echo "State for the PR is: $PR_STATE"
 
-              if [ $PR_STATE == "open" ]; then         
+              if [ "$PR_STATE" == "open" ]; then         
                 # Post the comment
                 echo "Posting comment to PR #$PR_NUMBER"
               

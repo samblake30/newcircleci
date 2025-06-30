@@ -1,3 +1,5 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
 jobs:
@@ -7,20 +9,59 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Dump env vars for debugging"
-          command: env | sort
+          name: "Install jq for JSON parsing"
+          command: sudo apt-get update && sudo apt-get install -y jq
       - run:
           name: "Post comment on PR"
           command: |
+            # Check if this is a pull request
             if [ -n "$CIRCLE_PULL_REQUEST" ]; then
               echo "This is a PR build: $CIRCLE_PULL_REQUEST"
+              
+              # Extract PR number from URL
+              PR_NUMBER=$(echo $CIRCLE_PULL_REQUEST | sed 's/.*\/pull\///' | sed 's/\/.*//')
+              echo "PR Number: $PR_NUMBER"
+              
+              # Get repository info
+              REPO_OWNER=$(echo $CIRCLE_REPOSITORY_URL | sed 's/.*github\.com[\/:]*//' | sed 's/\/.*$//')
+              REPO_NAME=$(echo $CIRCLE_REPOSITORY_URL | sed 's/.*\///' | sed 's/\.git$//')
+              echo "Repository: $REPO_OWNER/$REPO_NAME"
+              
+              # Create comment message
+              COMMENT_BODY="🚀 **CircleCI Build Notification**
+              
+              Hi! This is an automated comment from CircleCI.
+              
+              - **Branch:** \`$CIRCLE_BRANCH\`
+              - **Build Number:** \`$CIRCLE_BUILD_NUM\`
+              - **Commit:** \`$CIRCLE_SHA1\`
+              - **Build URL:** $CIRCLE_BUILD_URL
+              
+              Your pull request is being processed! ✨"
+              
+              # Post comment to GitHub using API
+              curl -X POST \
+                -H "Authorization: token $GH_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                -H "Content-Type: application/json" \
+                -d "{\"body\": \"$COMMENT_BODY\"}" \
+                "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments"
+              
+              if [ $? -eq 0 ]; then
+                echo "Successfully posted comment to PR #$PR_NUMBER"
+              else
+                echo "Failed to post comment to PR"
+                exit 1
+              fi
             else
               echo "Not a pull request build. Skipping comment."
             fi
 
 workflows:
-  my-workflows:
+  pr-workflow:
     jobs:
       - pr-comment:
           context: ctx-ci
-          
+          filters:
+            branches:
+              ignore: main

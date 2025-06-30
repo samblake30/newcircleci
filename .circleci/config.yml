@@ -9,6 +9,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Debug environment variables"
+          command: |
+            echo "CIRCLE_PR_NUMBER: $CIRCLE_PR_NUMBER"
+            echo "CIRCLE_PULL_REQUEST: $CIRCLE_PULL_REQUEST"
+            echo "CIRCLE_PROJECT_USERNAME: $CIRCLE_PROJECT_USERNAME"
+            echo "CIRCLE_PROJECT_REPONAME: $CIRCLE_PROJECT_REPONAME"
+            echo "CIRCLE_BRANCH: $CIRCLE_BRANCH"
+      - run:
           name: "Post comment on PR"
           command: |
               echo "Posting simple comment to PR #$CIRCLE_PR_NUMBER"

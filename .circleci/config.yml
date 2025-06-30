@@ -11,7 +11,7 @@ jobs:
       - run:
           name: "Post comment on PR"
           command: |
-              echo "Posting simple comment to PR #$PR_NUMBER"
+              echo "Posting simple comment to PR #$CIRCLE_PR_NUMBER"
               
               # Post comment to GitHub using API with simple message
               RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST \

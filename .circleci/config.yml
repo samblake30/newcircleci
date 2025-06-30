@@ -20,23 +20,6 @@ jobs:
                 -H "Content-Type: application/json" \
                 -d '{"body": "Good PR! 👍"}' \
                 "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
-              
-              HTTP_CODE=$(echo "$RESPONSE" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
-              RESPONSE_BODY=$(echo "$RESPONSE" | sed 's/HTTP_CODE:[0-9]*$//')
-              
-              echo "HTTP Response Code: $HTTP_CODE"
-              echo "Response Body: $RESPONSE_BODY"
-              
-              if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
-                echo "Successfully posted comment to PR #$PR_NUMBER"
-              else
-                echo "Failed to post comment to PR. HTTP Code: $HTTP_CODE"
-                echo "Response: $RESPONSE_BODY"
-              fi
-            else
-              echo "No PR number found. This might not be a pull request build."
-              echo "Branch: $CIRCLE_BRANCH"
-            fi
 
 workflows:
   pr-workflow:

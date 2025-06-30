@@ -7,18 +7,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Notify PR opened or updated"
+          name: "Notify if this is a pull request"
           command: |
-            echo "Pull request detected: Running notification job."
-            # Add any other commands you want here.
+            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+              echo "Pull request detected: $CIRCLE_PULL_REQUEST"
+            else
+              echo "Not a pull request build, skipping notification."
+            fi
 
 workflows:
   pr-workflow:
     jobs:
-      - pr-message:
-          filters:
-            pull_requests:
-              types:
-                - opened
-                - reopened
-                - synchronize
+      - pr-message

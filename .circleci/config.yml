@@ -7,26 +7,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Dump env vars for debugging"
+          command: env | sort
+      - run:
           name: "Post comment on PR"
           command: |
             if [ -n "$CIRCLE_PULL_REQUEST" ]; then
-              PR_NUMBER=$(echo $CIRCLE_PULL_REQUEST | grep -oE '[0-9]+$')
-              REPO_OWNER=$(echo $CIRCLE_REPOSITORY_URL | sed -E 's#.*/([^/]+)/([^/]+)(\.git)?#\1#')
-              REPO_NAME=$(echo $CIRCLE_REPOSITORY_URL | sed -E 's#.*/([^/]+)/([^/]+)(\.git)?#\2#')
-              COMMENT_BODY="Automated message: Thank you for your pull request! 🎉"
-
-              echo "Posting comment to PR #$PR_NUMBER in $REPO_OWNER/$REPO_NAME"
-
-              curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                   -H "Content-Type: application/json" \
-                   -X POST \
-                   -d "{\"body\": \"$COMMENT_BODY\"}" \
-                   "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments"
+              echo "This is a PR build: $CIRCLE_PULL_REQUEST"
             else
               echo "Not a pull request build. Skipping comment."
             fi
 
-workflows:
-  pr-comment-workflow:
-    jobs:
-      - pr-comment

@@ -9,6 +9,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Install jq for JSON parsing"
+          command: sudo apt-get update && sudo apt-get install -y jq
+      - run:
+          name: "Debug environment variables"
+          command: |
+            echo "CIRCLE_PR_NUMBER: $CIRCLE_PR_NUMBER"
+            echo "CIRCLE_PULL_REQUEST: $CIRCLE_PULL_REQUEST"
+            echo "CIRCLE_PROJECT_USERNAME: $CIRCLE_PROJECT_USERNAME"
+            echo "CIRCLE_PROJECT_REPONAME: $CIRCLE_PROJECT_REPONAME"
+            echo "CIRCLE_BRANCH: $CIRCLE_BRANCH"
+      - run:
           name: "Post comment on PR"
           command: |
             # Use the available environment variables
@@ -30,15 +41,32 @@ jobs:
             
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Found PR #$PR_NUMBER for branch $BRANCH_NAME"
-              echo "Posting simple comment to PR #$CIRCLE_PR_NUMBER"
               
-              # Post comment to GitHub using API with simple message
-              RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST \
+              # Post the comment
+              echo "Posting comment to PR #$PR_NUMBER"
+              
+              HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
                 -H "Authorization: token $GH_TOKEN" \
                 -H "Accept: application/vnd.github.v3+json" \
                 -H "Content-Type: application/json" \
                 -d '{"body": "Good PR! 👍"}' \
-                "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PR_REPONAME/issues/$CIRCLE_PR_NUMBER/comments")
+                "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
+              
+              echo "HTTP Response Code: $HTTP_CODE"
+              echo "Response Body:"
+              cat /tmp/response.json
+              
+              if [ "$HTTP_CODE" -eq 201 ]; then
+                echo "✅ Successfully posted comment to PR #$PR_NUMBER"
+              else
+                echo "❌ Failed to post comment. HTTP Code: $HTTP_CODE"
+                exit 1
+              fi
+            else
+              echo "❌ No open PR found for branch $BRANCH_NAME"
+              echo "This might not be a PR build, or the PR might be closed/merged"
+              exit 0
+            fi
 
 workflows:
   pr-workflow:
@@ -47,5 +75,6 @@ workflows:
           context: ctx-ci
           filters:
             branches:
-              ignore: main
-              
+              ignore: 
+                - main
+                - master

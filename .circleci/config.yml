@@ -18,3 +18,8 @@ jobs:
               echo "Not a pull request build. Skipping comment."
             fi
 
+workflows:
+  my-workflows:
+    jobs:
+      - pr-comment
+      

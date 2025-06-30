@@ -56,24 +56,15 @@ jobs:
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Posting comment to PR #$PR_NUMBER"
               
-              # Create comment message
-              COMMENT_BODY="🚀 **CircleCI Build Notification**
+              # Create simple comment
+              echo "Posting simple comment to PR #$PR_NUMBER"
               
-              Hi! This is an automated comment from CircleCI.
-              
-              - **Branch:** \`$CIRCLE_BRANCH\`
-              - **Build Number:** \`$CIRCLE_BUILD_NUM\`
-              - **Commit:** \`$CIRCLE_SHA1\`
-              - **Build URL:** $CIRCLE_BUILD_URL
-              
-              Your pull request is being processed! ✨"
-              
-              # Post comment to GitHub using API
+              # Post comment to GitHub using API with simple message
               RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST \
                 -H "Authorization: token $GH_TOKEN" \
                 -H "Accept: application/vnd.github.v3+json" \
                 -H "Content-Type: application/json" \
-                -d "{\"body\": \"$COMMENT_BODY\"}" \
+                -d '{"body": "Good PR! 👍"}' \
                 "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
               
               HTTP_CODE=$(echo "$RESPONSE" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)

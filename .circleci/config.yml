@@ -41,31 +41,35 @@ jobs:
             
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Found PR #$PR_NUMBER for branch $BRANCH_NAME"
+
+              PR_STATE = $(echo "$PR_RESPONSE" | jq -r  '.[0].state // empty')
+
+              if [ $PR_STATE == "open" ]; then         
+                # Post the comment
+                echo "Posting comment to PR #$PR_NUMBER"
               
-              # Post the comment
-              echo "Posting comment to PR #$PR_NUMBER"
+                HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
+                  -H "Authorization: token $GH_TOKEN" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  -H "Content-Type: application/json" \
+                  -d '{"body": "Good PR! 👍"}' \
+                  "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
               
-              HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
-                -H "Authorization: token $GH_TOKEN" \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Content-Type: application/json" \
-                -d '{"body": "Good PR! 👍"}' \
-                "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
+                echo "HTTP Response Code: $HTTP_CODE"
+                echo "Response Body:"
+                cat /tmp/response.json
               
-              echo "HTTP Response Code: $HTTP_CODE"
-              echo "Response Body:"
-              cat /tmp/response.json
-              
-              if [ "$HTTP_CODE" -eq 201 ]; then
-                echo "✅ Successfully posted comment to PR #$PR_NUMBER"
+                if [ "$HTTP_CODE" -eq 201 ]; then
+                  echo "✅ Successfully posted comment to PR #$PR_NUMBER"
+                else
+                  echo "❌ Failed to post comment. HTTP Code: $HTTP_CODE"
+                  exit 1
+                fi
               else
-                echo "❌ Failed to post comment. HTTP Code: $HTTP_CODE"
-                exit 1
+                echo "❌ No open PR found for branch $BRANCH_NAME"
+                echo "This might not be a PR build, or the PR might be closed/merged"
+                exit 0
               fi
-            else
-              echo "❌ No open PR found for branch $BRANCH_NAME"
-              echo "This might not be a PR build, or the PR might be closed/merged"
-              exit 0
             fi
 
 workflows:

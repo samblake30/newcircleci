@@ -19,7 +19,7 @@ jobs:
                 -H "Accept: application/vnd.github.v3+json" \
                 -H "Content-Type: application/json" \
                 -d '{"body": "Good PR! 👍"}' \
-                "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
+                "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PR_REPONAME/issues/$CIRCLE_PR_NUMBER/comments")
 
 workflows:
   pr-workflow:

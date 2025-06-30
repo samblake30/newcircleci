@@ -21,7 +21,7 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-# Orchestrate jobs using workflows and details of contexts
+# Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   say-hello-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.

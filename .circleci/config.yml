@@ -58,15 +58,15 @@ jobs:
               
               # Create comment message
               COMMENT_BODY="🚀 **CircleCI Build Notification**
-
-Hi! This is an automated comment from CircleCI.
-
-- **Branch:** \`$CIRCLE_BRANCH\`
-- **Build Number:** \`$CIRCLE_BUILD_NUM\`
-- **Commit:** \`$CIRCLE_SHA1\`
-- **Build URL:** $CIRCLE_BUILD_URL
-
-Your pull request is being processed! ✨"
+              
+              Hi! This is an automated comment from CircleCI.
+              
+              - **Branch:** \`$CIRCLE_BRANCH\`
+              - **Build Number:** \`$CIRCLE_BUILD_NUM\`
+              - **Commit:** \`$CIRCLE_SHA1\`
+              - **Build URL:** $CIRCLE_BUILD_URL
+              
+              Your pull request is being processed! ✨"
               
               # Post comment to GitHub using API
               RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST \

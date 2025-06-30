@@ -20,9 +20,6 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
-      - run:
-          name: "context variable details"
-          command: echo $GH_TOKEN
 
 # Orchestrate jobs using workflows and details of contexts
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows

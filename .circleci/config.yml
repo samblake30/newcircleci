@@ -5,15 +5,19 @@ commands:
       to:
         default: "world"
         type: string
+      surname:
+        default: "sambhare"
+        type: string
     steps:
-      - run: echo "Hello << parameters.to >>"
+      - run: echo "Hello << parameters.to >> << parameters.surname >>"
 jobs:
   my-job:
     docker:
       - image: cimg/base:stable
     steps:
       - greeting:
-          to: "Ankit Sambhare"
+          to: "Ankit"
+          surname: "Sambhare"
 workflows:
   my-workflow:
     jobs:

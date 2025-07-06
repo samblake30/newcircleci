@@ -2,18 +2,21 @@ version: 2.1
 commands: # a reusable command with parameters
   greeting:
     parameters:
-      to:
+      name:
         default: "world"
         type: string
+      surname:
+        type: string
     steps:
-      - run: echo "Hello <<parameters.to>>"
+      - run: echo "Hello << parameters.name >> << parameters.surname >>"
 jobs:
   my-job:
     docker:
       - image: cimg/base:stable
     steps:
       - greeting:
-          to: "Ankit"
+          name: "Ankit"
+          surname: "Sambhare"
 workflows:
   my-workflow:
     jobs:

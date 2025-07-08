@@ -93,10 +93,6 @@ data:
             container_cpu_cfs_throttled_periods_total|\
             container_cpu_cfs_periods_total|\
             container_network_receive_bytes_total|\
-            process_start_time_seconds|\
-            container_network_transmit_errors_total|\
-            container_cpu_usage_seconds_total|\
-            container_memory_working_set_bytes|\
             go_memstats_heap_alloc_bytes|\
             container_network_receive_errors_total|\
             go_gc_duration_seconds|\

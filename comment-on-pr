@@ -26,7 +26,7 @@ jobs:
             PR_NUMBER=""
             REPO_OWNER="samblake30"
             REPO_NAME="newcircleci"
-            
+
             # Try different methods to get PR number
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
               PR_NUMBER="$CIRCLE_PR_NUMBER"
@@ -42,23 +42,23 @@ jobs:
               echo "Trying to find PR using branch name: $CIRCLE_BRANCH"
               PR_RESPONSE=$(curl -s -H "Authorization: token $GH_TOKEN" \
                 "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls?head=$REPO_OWNER:$CIRCLE_BRANCH&state=open")
-              
+
               PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.[0].number // empty')
-              
+
               if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ]; then
                 echo "Found PR number from GitHub API: $PR_NUMBER"
               else
                 echo "Could not find PR number. PR Response: $PR_RESPONSE"
               fi
             fi
-            
+
             # Post comment if we found a PR number
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Posting comment to PR #$PR_NUMBER"
-              
+
               # Create simple comment
               echo "Posting simple comment to PR #$PR_NUMBER"
-              
+
               # Post comment to GitHub using API with simple message
               RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST \
                 -H "Authorization: token $GH_TOKEN" \
@@ -66,13 +66,13 @@ jobs:
                 -H "Content-Type: application/json" \
                 -d '{"body": "Good PR! 👍"}' \
                 "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
-              
+
               HTTP_CODE=$(echo "$RESPONSE" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
               RESPONSE_BODY=$(echo "$RESPONSE" | sed 's/HTTP_CODE:[0-9]*$//')
-              
+
               echo "HTTP Response Code: $HTTP_CODE"
               echo "Response Body: $RESPONSE_BODY"
-              
+
               if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
                 echo "Successfully posted comment to PR #$PR_NUMBER"
               else
@@ -92,4 +92,3 @@ workflows:
           filters:
             branches:
               ignore: main
-              

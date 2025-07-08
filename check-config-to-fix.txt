@@ -26,36 +26,36 @@ jobs:
             REPO_OWNER="$CIRCLE_PROJECT_USERNAME"
             REPO_NAME="$CIRCLE_PROJECT_REPONAME"
             BRANCH_NAME="$CIRCLE_BRANCH"
-            
+
             echo "Repository: $REPO_OWNER/$REPO_NAME"
             echo "Branch: $BRANCH_NAME"
-            
+
             # Find PR using GitHub API and branch name
             echo "Looking for PR with head branch: $REPO_OWNER:$BRANCH_NAME"
             PR_RESPONSE=$(curl -s -H "Authorization: token $GH_TOKEN" \
               "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls?head=$REPO_OWNER:$BRANCH_NAME&state=open")
-            
+
             echo "API Response: $PR_RESPONSE"
-            
+
             PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.[0].number // empty')
-            
+
             if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ] && [ "$PR_NUMBER" != "" ]; then
               echo "Found PR #$PR_NUMBER for branch $BRANCH_NAME"
-              
+
               # Post the comment
               echo "Posting comment to PR #$PR_NUMBER"
-              
+
               HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
                 -H "Authorization: token $GH_TOKEN" \
                 -H "Accept: application/vnd.github.v3+json" \
                 -H "Content-Type: application/json" \
                 -d '{"body": "Good PR! 👍"}' \
                 "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments")
-              
+
               echo "HTTP Response Code: $HTTP_CODE"
               echo "Response Body:"
               cat /tmp/response.json
-              
+
               if [ "$HTTP_CODE" -eq 201 ]; then
                 echo "✅ Successfully posted comment to PR #$PR_NUMBER"
               else
@@ -75,6 +75,6 @@ workflows:
           context: ctx-ci
           filters:
             branches:
-              ignore: 
+              ignore:
                 - main
                 - master

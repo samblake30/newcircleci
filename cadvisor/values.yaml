@@ -1,0 +1,122 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cadvisor-values
+  namespace: cadvisor
+data:
+  values.yaml: |
+    image:
+      repository: gcr.io/cadvisor/cadvisor
+      tag: v0.49.1
+      pullPolicy: IfNotPresent
+
+      ## Reference to one or more secrets to be used when pulling images
+      ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+      ##
+      pullSecrets: ${pullSecrets:=[]}
+
+    container:
+      port: ${port:=6666}
+      additionalArgs:
+        - -logtostderr
+        - -port=${port:=6666}
+      hostPaths:
+        - name: rootfs
+          path: "/"
+          mount: "/rootfs"
+          readOnly: true
+        - name: varrun
+          path: "/var/run"
+          readOnly: true
+        - name: sys
+          path: "/sys"
+          readOnly: true
+        - name: docker
+          path: "/var/lib/docker"
+          readOnly: true
+        - name: disk
+          path: "/dev/disk"
+          readOnly: true
+
+    resources:
+      requests:
+        cpu: ${resources_cpu_request:=150m}
+        memory: ${resources_memory_request:=200Mi}
+      limits:
+        cpu: ${resources_cpu_limit:=500m}
+        memory: ${resources_memory_limit:=1.5Gi}
+
+    podAnnotations: ${podAnnotations:={}}
+    podLabels: ${podLabels:={}}
+
+    daemonsetAnnotations:
+      seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+
+    priorityClassName: ${priorityClassName:=high-priority}
+
+    hostNetwork: ${enable_hostNetwork:=true}
+
+    serviceAccount:
+      create: ${enable_serviceAccount:=true}
+      name: cadvisor
+
+    podSecurityPolicy:
+      create: ${enable_podSecurityPolicy:=true}
+      privileged: ${enable_privileged:=false}
+
+    podSecurityContext:
+      create: ${enable_podSecurityContext:=true}
+      privileged: ${enable_privileged:=false}
+
+    nodeSelector: ${nodeSelector:={}}
+
+    tolerations:
+      - effect: NoSchedule
+        operator: Exists
+
+    affinity: ${affinity:={}}
+
+    metrics:
+      enabled: ${enable_metrics:=true}
+      interval: 30s
+      scrapeTimeout: 30s
+      metricRelabelings:
+        - sourceLabels: [__name__]
+          regex: '"container_memory_working_set_bytes|\
+            container_spec_memory_limit_bytes|\
+            container_cpu_usage_seconds_total|\
+            container_spec_cpu_quota|\
+            container_spec_cpu_period|\
+            container_spec_cpu_shares|\
+            container_cpu_cfs_throttled_seconds_total|\
+            container_cpu_cfs_throttled_periods_total|\
+            container_cpu_cfs_periods_total|\
+            container_network_receive_bytes_total|\
+            process_start_time_seconds|\
+            container_network_transmit_errors_total|\
+            container_cpu_usage_seconds_total|\
+            container_memory_working_set_bytes|\
+            go_memstats_heap_alloc_bytes|\
+            container_network_receive_errors_total|\
+            go_gc_duration_seconds|\
+            go_memstats_alloc_bytes_total|\
+            process_virtual_memory_bytes|\
+            container_network_receive_packets_dropped_total|\
+            go_goroutines|\
+            container_spec_cpu_period|\
+            process_open_fds|\
+            container_spec_cpu_quota|\
+            process_cpu_seconds_total|\
+            go_memstats_heap_inuse_bytes|\
+            container_network_transmit_bytes_total|\
+            container_network_transmit_packets_dropped_total|\
+            go_memstats_stack_inuse_bytes|\
+            process_resident_memory_bytes|\
+            container_network_receive_bytes_total|\
+            container_cpu_cfs_throttled_seconds_total|\
+            container_spec_memory_limit_bytes|\
+            go_memstats_alloc_bytes|\
+            container_spec_cpu_shares|\
+            container_network_transmit_bytes_total"'
+          action: keep

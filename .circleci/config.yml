@@ -95,7 +95,7 @@ jobs:
           git config --global user.email "ankitsambhare3004@gmail.com"
           git config --global user.name "samblake30"
           git config --global push.default simple
-          git config --global url."git@github.com-samblake30:".insteadOf "https://github.com/"
+#          git config --global url."git@github.com:".insteadOf "https://github.com/"
           mkdir -p  $ARTIFACTS_DIR
     - run:
         name: Install Python and pip

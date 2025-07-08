@@ -33,5 +33,5 @@ spec:
         namespace: cadvisor
       interval: 24h
   valuesFrom:
-    - kind: ConfigMap
-      name: cadvisor-values
+  - kind: ConfigMap
+    name: cadvisor-values

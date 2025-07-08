@@ -102,9 +102,6 @@ data:
             go_gc_duration_seconds|\
             go_memstats_alloc_bytes_total|\
             process_virtual_memory_bytes|\
-            container_network_receive_packets_dropped_total|\
-            go_goroutines|\
-            container_spec_cpu_period|\
             process_open_fds|\
             container_spec_cpu_quota|\
             process_cpu_seconds_total|\

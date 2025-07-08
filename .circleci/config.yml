@@ -678,7 +678,7 @@ workflows:
             - main
             - master
             - /dev\/.*
-        context: mist-ci
+        context: ctx-ci
         matrix:
           parameters:
             builder:
@@ -690,7 +690,7 @@ workflows:
             - main
             - master
             - /dev\/.*
-        context: mist-ci
+        context: ctx-ci
         requires:
         - build
     - build-main:
@@ -698,7 +698,7 @@ workflows:
           branches:
             only:
             - main
-        context: mist-ci
+        context: ctx-ci
         matrix:
           parameters:
             builder:

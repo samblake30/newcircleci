@@ -1,0 +1,28 @@
+---
+repos:
+- repo: https://github.com/google/yamlfmt
+  rev: v0.17.0
+  hooks:
+  - id: yamlfmt
+- repo: https://github.com/adrienverge/yamllint
+  rev: v1.37.1
+  hooks:
+  - id: yamllint
+# The official shellcheck hook uses Docker, so it's a no-go.
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.10.0.1
+  hooks:
+  - id: shellcheck
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-executables-have-shebangs
+  - id: check-merge-conflict
+  - id: check-symlinks
+  - id: detect-private-key
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+    args: [--markdown-linebreak-ext=md]
+  - id: mixed-line-ending
+    args: [--fix=lf]

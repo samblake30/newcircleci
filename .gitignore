@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+.Trashes
+desktop.ini
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea
+*.iml
+.vscode
+
+# Private keys and certificates
+*.key
+*.pem
+*.p12

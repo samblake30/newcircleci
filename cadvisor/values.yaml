@@ -113,10 +113,6 @@ data:
             container_network_transmit_packets_dropped_total|\
             go_memstats_stack_inuse_bytes|\
             process_resident_memory_bytes|\
-            container_network_receive_bytes_total|\
-            container_cpu_cfs_throttled_seconds_total|\
-            container_spec_memory_limit_bytes|\
-            go_memstats_alloc_bytes|\
             container_spec_cpu_shares|\
             container_network_transmit_bytes_total"'
           action: keep

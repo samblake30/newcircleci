@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-operator-crds-values
+  namespace: helm-base
+data:
+  values.yaml: |
+    crds:
+      ## annotations add additional annotations to all CRDs
+      annotations: {}
+
+      alertmanagerconfigs:
+        enabled: ${enable_alertmanagerconfigs:=true}
+
+      alertmanagers:
+        enabled: ${enable_alertmanagers:=true}
+
+      podmonitors:
+        enabled: ${enable_podmonitors:=true}
+
+      probes:
+        enabled: ${enable_probes:=true}
+
+      prometheusagents:
+        enabled: ${enable_prometheusagents:=true}
+
+      prometheuses:
+        enabled: ${enable_prometheuses:=true}
+
+      prometheusrules:
+        enabled: ${enable_prometheusrules:=true}
+
+      scrapeconfigs:
+        enabled: ${enable_scrapeconfigs:=false}
+
+      servicemonitors:
+        enabled: ${enable_servicemonitors:=true}
+
+      thanosrulers:
+        enabled: ${enable_thanosrulers:=true}

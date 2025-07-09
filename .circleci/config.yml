@@ -44,7 +44,6 @@ commands:
           cat values.yaml
           helm repo add $SERVICE_NAME $url
           helm repo update
-          echo "helm template --version $SERVICE_VERSION --namespace $SERVICE_NAME $SERVICE_NAME $SERVICE_NAME/$SERVICE_NAME -f ./values.yaml > << parameters.file_name >>.yaml"
           helm template --version $SERVICE_VERSION --namespace $SERVICE_NAME $SERVICE_NAME $SERVICE_NAME/$SERVICE_NAME -f ./values.yaml > << parameters.file_name >>.yaml
           cp << parameters.file_name >>.yaml $ARTIFACTS_DIR/
 
@@ -519,8 +518,7 @@ jobs:
           \`\`\`
           </details>
           "
-          echo "$BODY" >/tmp/content.json
-          cat /tmp/content.json
+          echo "$BODY" | jq -Rs . >/tmp/content.json
           # Use file instead of inline body
           comment_response=$(curl -sSL -w "%{http_code}" -o comment_output.json -X POST "$pr_comment_url" \
             -H "Accept: application/vnd.github+json" \

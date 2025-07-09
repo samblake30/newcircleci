@@ -520,12 +520,13 @@ jobs:
           </details>
           "
           echo "$BODY" >/tmp/content.json
+          cat /tmp/content.json
           # Use file instead of inline body
           comment_response=$(curl -sSL -w "%{http_code}" -o comment_output.json -X POST "$pr_comment_url" \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d "{\"body\": $(cat /tmp/content.json)}")
+            --data-binary @/tmp/content.json)
 
           if [ "$comment_response" -ne 201 ]; then
             echo "❌ Failed to post comment to PR. HTTP status: $comment_response"

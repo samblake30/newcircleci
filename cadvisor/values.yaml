@@ -105,12 +105,6 @@ data:
             container_network_receive_packets_dropped_total|\
             go_goroutines|\
             container_spec_cpu_period|\
-            process_open_fds|\
-            container_spec_cpu_quota|\
-            process_cpu_seconds_total|\
-            go_memstats_heap_inuse_bytes|\
-            container_network_transmit_bytes_total|\
-            container_network_transmit_packets_dropped_total|\
             go_memstats_stack_inuse_bytes|\
             process_resident_memory_bytes|\
             container_network_receive_bytes_total|\
